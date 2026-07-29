@@ -161,11 +161,11 @@ GEM
     google-protobuf (4.35.1-x86_64-linux-musl)
       bigdecimal
       rake (~> 13.3)
-    haml (7.2.1)
+    haml (7.2.2)
       temple (>= 0.8.2)
       thor
       tilt
-    haml-rails (2.1.0)
+    haml-rails (3.1.0)
       actionpack (>= 5.1)
       activesupport (>= 5.1)
       haml (>= 4.0.6)
@@ -466,7 +466,7 @@ DEPENDENCIES
   dotenv-rails
   faraday (~> 2.13)
   faraday-retry
-  haml-rails (~> 2.1)
+  haml-rails (~> 3.1)
   html2haml
   image_processing (~> 1.2)
   importmap-rails
@@ -547,8 +547,8 @@ CHECKSUMS
   google-protobuf (4.35.1-x86_64-darwin) sha256=66b62b4df00931018a692806df66393efa960d6d2b7da69735187249f950d3ee
   google-protobuf (4.35.1-x86_64-linux-gnu) sha256=c786439087512a3fbd199e9897d265b855f951d4027e218ea55e858d45969edd
   google-protobuf (4.35.1-x86_64-linux-musl) sha256=91890eb0002934a339fdb7d77a147c46b7474b6799db27872b747b905837f744
-  haml (7.2.1) sha256=99867c95f0a226b73ba1bb801ad0b56973c0f2ee5258127d632b32ea64b4d8f1
-  haml-rails (2.1.0) sha256=273ba0189e2f82ce4b2385019dd9138884017e3103cc2eaebeee7f45186f59ea
+  haml (7.2.2) sha256=b2f3819d6025a886dc50e5b85f67b568de3e87bc9b61e4d3a2f0f97e36d7fe02
+  haml-rails (3.1.0) sha256=4366474d973e4b9d5326cb216f2073150cfeff4c2a3c07fadb49a490ffdf610b
   html2haml (2.3.0) sha256=b587eaf532609642fc3b5c2b35861e8c9e15e72e0355b93bbcfee1e3ae088127
   i18n (1.15.2) sha256=00f9eb62412fe593b2a65a97daa75300d37abb8f7202ec748e94b6d46a9dd1b5
   image_processing (1.14.0) sha256=754cc169c9c262980889bec6bfd325ed1dafad34f85242b5a07b60af004742fb
