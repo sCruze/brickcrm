@@ -26,7 +26,7 @@ services:
       - .:/rails                  # правки кода видны сразу
       - bundle:/usr/local/bundle  # кэш гемов между перезапусками
     ports:
-      - "3001:3000"          # хост-порт 3001, чтобы жить рядом с другими dev-проектами
+      - "3000:3000"
     env_file: .env
     environment:                  # перекрывает .env: внутри compose база — сервис db
       DATABASE_HOST: db

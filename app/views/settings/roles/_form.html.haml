@@ -1,0 +1,27 @@
+= form_with model: [:settings, role], class: "form-narrow" do |f|
+  - if role.errors.any?
+    .flash.flash--alert= role.errors.full_messages.join(". ")
+  .field
+    = f.label :key, "Ключ (латиницей, для кода)"
+    = f.text_field :key, placeholder: "sales_manager", disabled: role.system?
+  .field
+    = f.label :name, "Название"
+    = f.text_field :name, placeholder: "Менеджер продаж"
+  .field
+    %label Права
+    - if role.system?
+      %p.muted Права системной роли фиксированы и не редактируются.
+    %table.table.perm-table
+      %tr
+        %th Раздел
+        - Role::ACTIONS.each do |action|
+          %th= Role.action_name(action)
+      - Role::SECTIONS.each do |section|
+        %tr
+          %td= Role.section_name(section)
+          - Role::ACTIONS.each do |action|
+            %td
+              = check_box_tag "role[permissions][#{section}][]", action, role.allows?(section, action), id: "perm_#{section}_#{action}", disabled: role.system?
+  .actions-row
+    = f.submit role.persisted? ? "Сохранить" : "Создать роль", class: "btn btn--primary"
+    = link_to "Отмена", settings_roles_path, class: "btn btn--quiet"

@@ -63,7 +63,7 @@ SSO включается сам при наличии ключа и issuer.
 
 ```bash
 # в .env: INBOUND_API_TOKENS=demo:какой-то-токен, перезапустить контейнер
-curl -s -X POST http://localhost:3001/api/v1/events \
+curl -s -X POST http://localhost:3000/api/v1/events \
   -H "Authorization: Bearer какой-то-токен" \
   -H "Content-Type: application/json" \
   -d '{"event_key":"test-1","entity_type":"ping","entity_id":"1","event":"created","payload":{"hello":"world"}}'

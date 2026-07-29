@@ -1,2 +1,40 @@
 - content_for :title, "Календарь · BrickCRM"
-= render "shared/placeholder", title: "Календарь", text: "Расписание и календарь занятий/встреч: неделя, день, месяц."
+- can_write = current_user.permission?("tasks", "write")
+.page-head
+  %h1 Календарь
+  .page-head__spacer
+  .month-nav
+    = link_to "←", calendar_path(month: (@month - 1.month).strftime("%Y-%m")), class: "btn btn--quiet btn--sm"
+    %span.month-nav__title= month_title(@month)
+    = link_to "→", calendar_path(month: (@month + 1.month).strftime("%Y-%m")), class: "btn btn--quiet btn--sm"
+    = link_to "Сегодня", calendar_path, class: "btn btn--secondary btn--sm"
+%div{data: { controller: "day-modal" }}
+  .card.card--calendar
+    .cal
+      - ApplicationHelper::RU_DAYS_SHORT.each do |day|
+        .cal__weekday= day
+      - @weeks.flatten.each do |date|
+        - tasks = @tasks_by_day[date] || []
+        .cal__day{class: [("cal__day--other" if date.month != @month.month), ("cal__day--today" if date == Date.current)].compact.join(" "), data: { action: "click->day-modal#open", date: date.iso8601, label: "#{date.day} #{ApplicationHelper::RU_MONTHS[date.month - 1]}" }}
+          .cal__num= date.day
+          - tasks.first(3).each do |task|
+            = link_to task.title, edit_task_path(task), class: "cal__task", data: { task_title: task.title }
+          - if tasks.size > 3
+            .cal__more= "ещё #{tasks.size - 3}"
+  %dialog.modal{data: { "day-modal-target": "dialog", action: "click->day-modal#backdrop" }}
+    .modal__inner
+      .modal__head
+        %h2.modal__title{data: { "day-modal-target": "title" }}
+        %button.modal__close{type: "button", data: { action: "day-modal#close" }, "aria-label": "Закрыть"} ×
+      .modal__tasks{data: { "day-modal-target": "list" }}
+      - if can_write
+        = form_with url: tasks_path, method: :post, class: "modal__form" do
+          = hidden_field_tag "return_to", request.fullpath
+          = hidden_field_tag "task[due_on]", "", data: { "day-modal-target": "date" }
+          = hidden_field_tag "task[assignee_id]", current_user.id
+          .field
+            = text_field_tag "task[title]", "", placeholder: "Новая задача на этот день", required: true, data: { "day-modal-target": "input" }
+          .actions-row
+            = submit_tag "Создать задачу", class: "btn btn--primary"
+            %button.btn.btn--quiet{type: "button", data: { action: "day-modal#close" }} Закрыть
+%p.muted В календаре — невыполненные задачи со сроком. Клик по дню — задачи этого дня и быстрое создание новой.

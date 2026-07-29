@@ -1,0 +1,39 @@
+- content_for :title, "#{@client.name} · BrickCRM"
+- can_write = current_user.permission?("clients", "write")
+.crumbs= link_to "← Клиенты", clients_path
+.page-head
+  %h1= @client.name
+  .page-head__spacer
+  - if can_write
+    = link_to "Изменить", edit_client_path(@client), class: "btn btn--secondary btn--sm"
+    = button_to "Удалить", client_path(@client), method: :delete, class: "btn btn--danger btn--sm", form: { data: { turbo_confirm: "Удалить клиента «#{@client.name}»?" }, class: "inline-form" }
+.grid.grid--panels
+  .card
+    %h2 Контакты
+    %table.table
+      %tr
+        %td.muted Телефон
+        %td= @client.phone.presence || "—"
+      %tr
+        %td.muted Почта
+        %td= @client.email.presence || "—"
+      %tr
+        %td.muted Филиал
+        %td= @client.branch&.name || "общий"
+      %tr
+        %td.muted В базе с
+        %td= ru_date_short(@client.created_at.to_date)
+    - if @client.notes.present?
+      %p.muted= @client.notes
+  .card
+    %h2 Лиды клиента
+    - if @leads.any?
+      %table.table
+        - @leads.each do |lead|
+          %tr
+            %td= link_to lead.title, lead_path(lead)
+            %td
+              %span.chip{class: lead.stage.won? ? "chip--on" : (lead.stage.lost? ? "chip--off" : "")}= lead.stage.name
+            %td.muted= money(lead.amount)
+    - else
+      %p.muted Лидов пока нет.

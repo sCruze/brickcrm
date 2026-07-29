@@ -1,18 +1,49 @@
 - content_for :title, "Дашборд · BrickCRM"
 .page-head
   %h1 Дашборд
+  %span.page-head__hint сводка по всей сети
 .grid.grid--stats
   .stat-card
     .stat-card__label Новые лиды
-    .stat-card__value 0
+    .stat-card__value{data: { controller: "counter", counter_to_value: @new_today }}= @new_today
+    .stat-card__foot за сегодня
   .stat-card
     .stat-card__label Сделки в работе
-    .stat-card__value 0
+    .stat-card__value{data: { controller: "counter", counter_to_value: @in_progress }}= @in_progress
+    .stat-card__foot по открытым этапам
   .stat-card
     .stat-card__label Выручка за месяц
-    .stat-card__value —
+    .stat-card__value= money(@month_revenue)
+    .stat-card__foot по оплаченным лидам
   .stat-card
     .stat-card__label Задачи на сегодня
-    .stat-card__value 0
-.card.card--placeholder
-  %p.muted Каркас готов: виджеты дашборда подключим, когда появятся данные воронок.
+    .stat-card__value{data: { controller: "counter", counter_to_value: @tasks_today }}= @tasks_today
+    .stat-card__foot= @tasks_overdue.positive? ? "просрочено: #{@tasks_overdue}" : "без просроченных"
+.grid.grid--panels
+  .card
+    %h2 Последние лиды
+    - if @recent_leads.any?
+      %table.table
+        - @recent_leads.each do |lead|
+          %tr
+            %td= link_to lead.title, lead_path(lead)
+            %td
+              %span.chip{class: lead.stage.won? ? "chip--on" : (lead.stage.lost? ? "chip--off" : "")}= lead.stage.name
+            %td.muted= ru_date_short(lead.created_at.to_date)
+    - else
+      .empty
+        = nav_icon("leads")
+        %p.empty__text Лидов пока нет.
+        = link_to "Создать первый лид", new_lead_path, class: "btn btn--primary btn--sm"
+  .card
+    %h2 Задачи на сегодня
+    - if @today_tasks.any?
+      .tasks
+        - @today_tasks.each do |task|
+          = render "tasks/task", task: task, can_write: current_user.permission?("tasks", "write")
+    - else
+      .empty
+        = nav_icon("tasks")
+        %p.empty__text На сегодня всё чисто.
+        - if current_user.permission?("tasks", "write")
+          = link_to "Поставить задачу", new_task_path, class: "btn btn--secondary btn--sm"

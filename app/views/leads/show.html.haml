@@ -1,0 +1,57 @@
+- content_for :title, "#{@lead.title} · BrickCRM"
+- can_write = current_user.permission?("leads", "write")
+.crumbs= link_to "← Лиды", leads_path(funnel_id: @lead.funnel_id)
+.page-head
+  %h1= @lead.title
+  %span.chip{class: @lead.stage.won? ? "chip--on" : (@lead.stage.lost? ? "chip--off" : "")}= @lead.stage.name
+  .page-head__spacer
+  - if can_write
+    = link_to "Изменить", edit_lead_path(@lead), class: "btn btn--secondary btn--sm"
+    = button_to "Удалить", lead_path(@lead), method: :delete, class: "btn btn--danger btn--sm", form: { data: { turbo_confirm: "Удалить лид?" }, class: "inline-form" }
+.grid.grid--panels
+  .card
+    %h2 Детали
+    %table.table
+      %tr
+        %td.muted Сумма
+        %td= money(@lead.amount)
+      %tr
+        %td.muted Контакт
+        %td
+          - if @lead.client
+            = link_to @lead.client.name, client_path(@lead.client)
+          - else
+            = @lead.contact_name.presence || "—"
+      %tr
+        %td.muted Телефон
+        %td= @lead.phone.presence || "—"
+      %tr
+        %td.muted Почта
+        %td= @lead.email.presence || "—"
+      %tr
+        %td.muted Источник
+        %td= @lead.source.presence || "—"
+      %tr
+        %td.muted Ответственный
+        %td= @lead.assignee&.name.presence || @lead.assignee&.email || "—"
+      %tr
+        %td.muted Филиал
+        %td= @lead.branch&.name || "общий"
+      %tr
+        %td.muted Создан
+        %td= ru_date_short(@lead.created_at.to_date)
+    - if @lead.notes.present?
+      %p.muted= @lead.notes
+  .card
+    %h2 Задачи по лиду
+    - if current_user.permission?("tasks", "write")
+      %p= link_to "+ Задача по этому лиду", new_task_path(lead_id: @lead.id)
+    - if @tasks.any?
+      %table.table
+        - @tasks.each do |task|
+          %tr
+            %td{class: ("muted" if task.done?)}= task.title
+            %td.muted= task.due_on ? ru_date_short(task.due_on) : "без срока"
+            %td= task.done? ? "✓" : ""
+    - else
+      %p.muted Задач пока нет.

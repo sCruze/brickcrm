@@ -1,0 +1,92 @@
+ru:
+  # Разделы CRM (Role::SECTIONS)
+  sections:
+    dashboard: Дашборд
+    leads: Лиды
+    clients: Клиенты
+    tasks: Задачи
+    calendar: Календарь
+    reports: Отчёты
+    settings: Настройки
+    roles: Роли
+    sync: Синхронизация
+
+  # Действия внутри раздела (Role::ACTIONS)
+  permissions:
+    read: просмотр
+    write: редактирование
+    manage: управление
+
+  # Статусы событий синхронизации
+  statuses:
+    inbox_event:
+      pending: в очереди
+      processed: обработано
+      failed: ошибка
+    outbox_event:
+      pending: в очереди
+      delivered: доставлено
+      dead: остановлено
+
+  activerecord:
+    models:
+      user: Пользователь
+      funnel: Воронка
+      stage: Этап
+      lead: Лид
+      client: Клиент
+      task: Задача
+      session: Сессия
+      role: Роль
+      branch: Филиал
+      membership: Доступ
+      inbox_event: Входящее событие
+      outbox_event: Исходящее событие
+      webhook_endpoint: Webhook-эндпоинт
+    attributes:
+      user:
+        name: Имя
+        email: Почта
+        password: Пароль
+        active: Активен
+      role:
+        key: Ключ
+        name: Название
+        permissions: Права
+      branch:
+        name: Название
+        city: Город
+        active: Активен
+      membership:
+        role: Роль
+        branch: Филиал
+      webhook_endpoint:
+        name: Имя
+        url: URL
+        token: Токен
+      lead:
+        title: Название
+        funnel: Воронка
+        stage: Этап
+        contact_name: Контакт
+        phone: Телефон
+        email: Почта
+        source: Источник
+        amount: Сумма
+        assignee: Ответственный
+        client: Клиент
+        branch: Филиал
+        notes: Заметки
+      client:
+        name: Имя
+        phone: Телефон
+        email: Почта
+        branch: Филиал
+        notes: Заметки
+      task:
+        title: Название
+        due_on: Срок
+        assignee: Ответственный
+        lead: Лид
+        client: Клиент
+        notes: Заметки

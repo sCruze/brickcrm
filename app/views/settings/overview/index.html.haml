@@ -1,0 +1,43 @@
+- content_for :title, "Настройки · BrickCRM"
+.page-head
+  %h1 Настройки
+  %span.page-head__hint управление системой
+.link-cards
+  = link_to settings_roles_path, class: "link-card" do
+    .link-card__title Роли и права
+    .link-card__desc Матрица доступа: разделы × действия, скоупы по филиалам
+    %span.chip= @roles_count
+  = link_to settings_branches_path, class: "link-card" do
+    .link-card__title Филиалы
+    .link-card__desc Точки сети — ось скоупа ролей и данных
+    %span.chip= @branches_count
+  = link_to settings_webhook_endpoints_path, class: "link-card" do
+    .link-card__title Webhook-эндпоинты
+    .link-card__desc Куда доставляются исходящие события
+    %span.chip= @endpoints_count
+.card
+  %h2 Режим работы
+  %table.table
+    %tr
+      %td Вход по паролю
+      %td
+        - if @password_auth
+          %span.chip.chip--on включён
+        - else
+          %span.chip.chip--off выключен
+    %tr
+      %td Вход через SSO
+      %td
+        - if @sso_enabled
+          %span.chip.chip--on= CrmConfig::Sso.provider_name
+        - else
+          %span.chip.chip--off не сконфигурирован
+    %tr
+      %td Входящие источники событий
+      %td
+        - if @inbound_sources.any?
+          - @inbound_sources.each do |source|
+            %code= source
+        - else
+          %span.chip.chip--off канал закрыт
+  %p.muted Способы входа и API-токены задаются переменными окружения на сервере: секреты не хранятся в базе и намеренно не редактируются из интерфейса.

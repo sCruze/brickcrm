@@ -1,0 +1,6 @@
+- content_for :title, "Новый эндпоинт · BrickCRM"
+.crumbs= link_to "← Webhook-эндпоинты", settings_webhook_endpoints_path
+.page-head
+  %h1 Новый эндпоинт
+.card
+  = render "form", endpoint: @endpoint

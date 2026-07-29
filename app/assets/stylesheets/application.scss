@@ -1,195 +1,384 @@
-// ===== Дизайн-токены (по мотивам макета KoderLab CRM) =====
-$bg: #f4f6fb;
+// ============================================================
+// BrickCRM — дизайн-система v2
+// Тёмный графитовый сайдбар, светлая рабочая зона на всю ширину,
+// один уверенный акцент — кобальт. Manrope + JetBrains Mono.
+// ============================================================
+
+// --- Токены ---
+$bg: #f4f6f9;             // холодный светлый фон рабочей зоны
 $surface: #ffffff;
-$ink: #101828;
-$muted: #667085;
-$border: #e4e7ef;
-$accent: #2dc1fd;
-$accent-ink: #06283a;
-$sidebar-bg: #0b1220;
-$sidebar-ink: #aab4c8;
-$sidebar-active: #ffffff;
-$danger: #e5484d;
-$success: #2fbf71;
-$radius: 12px;
+$ink: #14181f;
+$ink-soft: #667085;
+$line: #e6e9ef;
+$accent: #2e6be6;          // кобальт
+$accent-deep: #2447c7;
+$accent-soft: #e9efff;
+$night: #0d1220;           // сайдбар: тёмный сине-графитовый
+$night-2: #131a2c;
+$night-ink: #98a2b8;
+$green: #12905b;
+$gold: #b7791f;
+$danger: #d93636;
+$radius: 10px;
+$shadow-1: 0 1px 2px rgba(16, 24, 40, 0.05);
+$shadow-2: 0 8px 24px rgba(16, 24, 40, 0.08);
+
+$font-body: "Nunito Sans", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+$font-display: "Rubik", $font-body;
+$font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+@mixin microlabel {
+  font-family: $font-mono;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: $ink-soft;
+}
 
 * { box-sizing: border-box; }
 
+html { height: 100%; }
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: $bg;
+  min-height: 100%;
+  font-family: $font-body;
+  font-size: 14.5px;
+  line-height: 1.55;
   color: $ink;
-  font-size: 15px;
-  line-height: 1.45;
+  background: $bg;
+  -webkit-font-smoothing: antialiased;
 }
 
-a { color: #0d94cc; text-decoration: none; }
+a { color: $accent-deep; text-decoration: none; }
 
-// ===== Каркас приложения =====
+h1, h2, h3 { font-family: $font-display; font-weight: 600; letter-spacing: -0.005em; }
+
+:focus-visible {
+  outline: 2px solid rgba(46, 107, 230, 0.55);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+// ============================================================
+// Каркас: контент на всю ширину экрана
+// ============================================================
 .app {
   display: grid;
-  grid-template-columns: 232px 1fr;
+  grid-template-columns: 248px minmax(0, 1fr);
   min-height: 100vh;
 }
 
+.shell { display: flex; flex-direction: column; min-width: 0; }
+
 .content {
-  padding: 28px 32px;
-  max-width: 1200px;
+  width: 100%;
+  padding: 26px 40px 56px;
 }
 
-// ===== Сайдбар =====
+// ============================================================
+// Сайдбар
+// ============================================================
 .sidebar {
-  background: $sidebar-bg;
-  color: $sidebar-ink;
+  background: linear-gradient(180deg, $night-2 0%, $night 240px);
+  color: $night-ink;
   display: flex;
   flex-direction: column;
-  padding: 20px 14px;
+  padding: 18px 14px 14px;
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow-y: auto;
 
   &__logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 11px;
     padding: 4px 10px 18px;
   }
 
-  &__logo-mark {
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: $accent;
-    color: $accent-ink;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   &__logo-text {
-    color: $sidebar-active;
+    font-family: $font-display;
+    font-size: 15.5px;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    letter-spacing: -0.005em;
+    color: #fff;
   }
 
-  &__nav {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex: 1;
+  &__nav { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+
+  &__section {
+    @include microlabel;
+    color: rgba(152, 162, 184, 0.55);
+    padding: 16px 12px 6px;
   }
 
   &__link {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 11px;
     padding: 9px 12px;
     border-radius: 8px;
-    color: $sidebar-ink;
+    color: $night-ink;
+    font-weight: 600;
+    font-size: 14px;
+    transition: background 0.13s ease, color 0.13s ease;
 
-    &:hover { background: rgba(255, 255, 255, 0.06); color: $sidebar-active; }
+    .icon { width: 19px; height: 19px; flex: none; opacity: 0.7; transition: opacity 0.13s ease; }
+
+    &:hover { background: rgba(255, 255, 255, 0.06); color: #eef1f7; }
+    &:hover .icon { opacity: 1; }
 
     &--active {
-      background: rgba(45, 193, 253, 0.14);
-      color: $sidebar-active;
+      background: linear-gradient(135deg, #3e7bfa, $accent-deep);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(46, 107, 230, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
+    &--active .icon { opacity: 1; }
   }
 
   &__footer {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    margin-top: 12px;
+    padding: 12px 12px 2px;
   }
 
-  &__user {
-    font-size: 13px;
-    color: $sidebar-active;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0 4px;
+  &__version {
+    font-family: $font-mono;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    color: rgba(152, 162, 184, 0.5);
   }
 }
 
-// ===== Общие элементы =====
-.page-head {
-  margin-bottom: 18px;
+.brand-mark { width: 30px; height: 30px; flex: none; border-radius: 9px; box-shadow: 0 4px 12px rgba(36, 64, 199, 0.4); }
 
-  h1 { margin: 0; font-size: 24px; }
+// ============================================================
+// Топбар
+// ============================================================
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 40px;
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid $line;
+
+  &__date {
+    font-family: $font-mono;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: $ink-soft;
+  }
+
+  &__user { display: flex; align-items: center; gap: 10px; }
+
+  &__user-name {
+    font-size: 13.5px;
+    font-weight: 600;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #3e7bfa, $accent-deep);
+  color: #fff;
+  font-family: $font-mono;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+// ============================================================
+// Страницы
+// ============================================================
+.page-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin: 2px 0 20px;
+
+  h1 { margin: 0; font-size: 21px; font-weight: 700; }
+
+  .page-head__hint { color: $ink-soft; font-size: 13.5px; }
 }
 
 .card {
   background: $surface;
-  border: 1px solid $border;
+  border: 1px solid $line;
   border-radius: $radius;
   padding: 20px 22px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
+  box-shadow: $shadow-1;
 
-  h2 { margin: 0 0 12px; font-size: 17px; }
-
-  &--placeholder { border-style: dashed; }
+  h2 { margin: 0 0 14px; font-size: 15px; font-weight: 700; }
 }
 
-.muted { color: $muted; }
+.muted { color: $ink-soft; }
 
+// Статистика
 .grid--stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 .stat-card {
   background: $surface;
-  border: 1px solid $border;
+  border: 1px solid $line;
   border-radius: $radius;
   padding: 16px 18px;
+  box-shadow: $shadow-1;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
 
-  &__label { color: $muted; font-size: 13px; margin-bottom: 6px; }
-  &__value { font-size: 26px; font-weight: 700; }
+  &:hover { box-shadow: $shadow-2; transform: translateY(-1px); }
+
+  &__label { @include microlabel; margin-bottom: 10px; }
+
+  &__value {
+    font-family: $font-display;
+    font-size: 30px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  &__foot { color: $ink-soft; font-size: 12.5px; margin-top: 7px; }
 }
 
+.grid--panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 14px;
+}
+
+// Пустые состояния
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 38px 20px 34px;
+
+  .icon {
+    width: 44px;
+    height: 44px;
+    padding: 11px;
+    border-radius: 12px;
+    background: $accent-soft;
+    color: $accent-deep;
+    margin-bottom: 14px;
+  }
+
+  &__text { color: $ink-soft; font-size: 14px; max-width: 440px; margin: 0 0 14px; }
+}
+
+.card--empty { border-style: dashed; background: rgba(255, 255, 255, 0.55); box-shadow: none; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: $font-mono;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 99px;
+  background: $accent-soft;
+  color: $accent-deep;
+
+  &--on { background: #e2f5ec; color: #0d6b45; }
+  &--off { background: #eef0f4; color: $ink-soft; }
+}
+
+code, .code {
+  font-family: $font-mono;
+  font-size: 12.5px;
+  background: #f2f4f8;
+  border: 1px solid $line;
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+// Таблицы
 .table {
   width: 100%;
   border-collapse: collapse;
 
   th, td {
     text-align: left;
-    padding: 8px 10px;
-    border-bottom: 1px solid $border;
+    padding: 10px 10px;
+    border-bottom: 1px solid $line;
     vertical-align: top;
+    font-size: 14px;
   }
 
-  th { color: $muted; font-weight: 600; font-size: 13px; }
+  th { @include microlabel; }
   tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
 }
 
-// ===== Кнопки и формы =====
+// ============================================================
+// Кнопки и формы
+// ============================================================
 .btn {
   display: inline-block;
   border: 1px solid transparent;
-  border-radius: 9px;
+  border-radius: 8px;
   padding: 10px 16px;
-  font-size: 15px;
+  font-family: $font-display;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   text-align: center;
+  transition: background 0.13s ease, box-shadow 0.13s ease, border-color 0.13s ease;
 
   &--primary {
-    background: $accent;
-    color: $accent-ink;
+    background: linear-gradient(135deg, #3e7bfa, $accent-deep);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(46, 107, 230, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.22);
 
-    &:hover { filter: brightness(1.05); }
+    &:hover { background: linear-gradient(135deg, #366ff0, #1f3eb4); }
   }
 
-  &--ghost {
-    background: transparent;
-    color: $sidebar-ink;
-    border-color: rgba(255, 255, 255, 0.16);
+  &--secondary {
+    background: $surface;
+    color: $ink;
+    border-color: $line;
+    box-shadow: $shadow-1;
 
-    &:hover { color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+    &:hover { border-color: #cdd3de; background: #f8fafc; }
+  }
+
+  &--quiet {
+    background: transparent;
+    color: $ink-soft;
+    border-color: $line;
+
+    &:hover { color: $ink; border-color: #cdd3de; background: #f8fafc; }
   }
 
   &--sm { padding: 6px 12px; font-size: 13px; }
@@ -200,10 +389,9 @@ a { color: #0d94cc; text-decoration: none; }
   margin-bottom: 14px;
 
   label {
+    @include microlabel;
     display: block;
-    font-size: 13px;
-    color: $muted;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
   }
 
   input[type="email"],
@@ -211,71 +399,602 @@ a { color: #0d94cc; text-decoration: none; }
   input[type="text"] {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid $border;
-    border-radius: 9px;
-    font-size: 15px;
-    background: #fff;
+    border: 1px solid $line;
+    border-radius: 8px;
+    font-family: $font-body;
+    font-size: 14.5px;
+    background: $surface;
+    color: $ink;
+    transition: border-color 0.13s ease, box-shadow 0.13s ease;
 
-    &:focus { outline: 2px solid rgba(45, 193, 253, 0.45); border-color: $accent; }
+    &::placeholder { color: #a6adbb; }
+
+    &:focus {
+      outline: none;
+      border-color: $accent;
+      box-shadow: 0 0 0 3px rgba(46, 107, 230, 0.16);
+    }
   }
 }
 
-// ===== Экран входа =====
+// ============================================================
+// Экран входа
+// ============================================================
 .auth {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: $sidebar-bg;
   padding: 24px;
-  flex-direction: column;
+  background:
+    radial-gradient(640px 420px at 16% 8%, rgba(62, 123, 250, 0.28), transparent 62%),
+    radial-gradient(760px 520px at 88% 92%, rgba(36, 64, 199, 0.22), transparent 62%),
+    $night;
 }
+
+.auth__inner { width: 100%; max-width: 392px; }
 
 .auth-card {
   background: $surface;
-  border-radius: 16px;
-  padding: 32px;
-  width: 100%;
-  max-width: 380px;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+  border-radius: 14px;
+  padding: 30px 30px 26px;
+  box-shadow: 0 30px 80px rgba(4, 10, 30, 0.55);
 
-  &__logo { display: flex; justify-content: center; margin-bottom: 14px; }
-  &__title { margin: 0 0 16px; font-size: 20px; text-align: center; }
-}
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
 
-// ===== Флеши =====
-.flash {
-  border-radius: 10px;
-  padding: 10px 14px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  &__brand { font-family: $font-display; font-size: 15px; font-weight: 700; }
 
-  &--alert { background: rgba(229, 72, 77, 0.1); color: $danger; border: 1px solid rgba(229, 72, 77, 0.35); }
-  &--notice { background: rgba(47, 191, 113, 0.1); color: #238f55; border: 1px solid rgba(47, 191, 113, 0.35); }
-}
+  &__title { margin: 0 0 4px; font-size: 19px; }
 
-.auth .flash { width: 100%; max-width: 380px; }
+  &__hint { margin: 0 0 20px; color: $ink-soft; font-size: 13.5px; }
 
-.auth-card__divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: $muted;
-  font-size: 13px;
-  margin: 14px 0;
+  &__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: $ink-soft;
+    font-size: 12.5px;
+    margin: 16px 0;
 
-  &::before, &::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: $border;
+    &::before, &::after { content: ""; flex: 1; height: 1px; background: $line; }
   }
 }
 
-.btn--secondary {
-  background: #eef2f8;
-  color: $ink;
-  border-color: $border;
+// ============================================================
+// Флеши
+// ============================================================
+.flash {
+  border-radius: 9px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  border: 1px solid;
 
-  &:hover { background: #e4eaf3; }
+  &--alert { background: #fdecec; color: #b02a2a; border-color: #f3c6c6; }
+  &--notice { background: #e6f6ee; color: #0d6b45; border-color: #c4e8d5; }
+}
+
+.auth .flash { box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35); }
+
+// ============================================================
+// Адаптив
+// ============================================================
+@media (min-width: 1700px) {
+  .content { padding: 30px 56px 64px; }
+  .topbar { padding: 11px 56px; }
+  .grid--stats { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+}
+
+@media (max-width: 860px) {
+  .app { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 4px; }
+  .sidebar__nav { flex-direction: row; flex-wrap: wrap; }
+  .sidebar__section, .sidebar__footer { display: none; }
+  .topbar { padding: 10px 18px; position: static; }
+  .content { padding: 18px; }
+}
+
+// ============================================================
+// Раздел настроек: формы, матрица прав, карточки-ссылки
+// ============================================================
+.crumbs {
+  margin-bottom: 10px;
+  font-size: 13px;
+
+  a { color: $ink-soft; font-weight: 600; }
+  a:hover { color: $accent-deep; }
+}
+
+.page-head__spacer { flex: 1; }
+
+.form-narrow { max-width: 680px; }
+
+.field--inline {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  label { margin: 0; }
+}
+
+input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: $accent;
+  cursor: pointer;
+}
+
+.perm-table {
+  th:not(:first-child), td:not(:first-child) { text-align: center; width: 132px; }
+  td:first-child { font-weight: 600; }
+}
+
+.actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cell-actions {
+  text-align: right;
+  white-space: nowrap;
+
+  .btn { margin-left: 6px; }
+  form.inline-form { display: inline-block; }
+}
+
+.btn--danger {
+  background: #fdecec;
+  color: #b02a2a;
+  border-color: #f3c6c6;
+
+  &:hover { background: #fadfdf; border-color: #eab3b3; }
+}
+
+.link-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.link-card {
+  display: block;
+  background: $surface;
+  border: 1px solid $line;
+  border-radius: $radius;
+  padding: 18px 20px;
+  box-shadow: $shadow-1;
+  color: $ink;
+  transition: border-color 0.13s ease, box-shadow 0.13s ease, transform 0.13s ease;
+
+  &:hover {
+    border-color: rgba(46, 107, 230, 0.55);
+    box-shadow: $shadow-2;
+    transform: translateY(-1px);
+  }
+
+  &__title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  &__desc { color: $ink-soft; font-size: 13px; margin-bottom: 12px; }
+}
+
+// ============================================================
+// Анимации появления
+// ============================================================
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(7px); }
+  to { opacity: 1; transform: none; }
+}
+
+.content > * { animation: fadeUp 0.34s ease both; }
+.content > *:nth-child(2) { animation-delay: 0.05s; }
+.content > *:nth-child(3) { animation-delay: 0.1s; }
+.content > *:nth-child(4) { animation-delay: 0.15s; }
+.content > *:nth-child(5) { animation-delay: 0.2s; }
+
+// ============================================================
+// Формы: селекты, textarea, ряды
+// ============================================================
+.field select,
+.field textarea,
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid $line;
+  border-radius: 8px;
+  font-family: $font-body;
+  font-size: 14.5px;
+  background: $surface;
+  color: $ink;
+  transition: border-color 0.13s ease, box-shadow 0.13s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $accent;
+    box-shadow: 0 0 0 3px rgba(46, 107, 230, 0.16);
+  }
+}
+
+.field textarea { resize: vertical; }
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  @media (max-width: 640px) { grid-template-columns: 1fr; }
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+
+  .search-input { max-width: 420px; }
+}
+
+// ============================================================
+// Вкладки воронок
+// ============================================================
+.funnel-tabs { display: flex; gap: 6px; }
+
+.funnel-tab {
+  padding: 6px 13px;
+  border-radius: 99px;
+  border: 1px solid $line;
+  background: $surface;
+  color: $ink-soft;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.13s ease;
+
+  &:hover { color: $ink; border-color: #cdd3de; }
+
+  &--active {
+    background: $ink;
+    border-color: $ink;
+    color: #fff;
+  }
+}
+
+// ============================================================
+// Канбан-доска
+// ============================================================
+.board {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  overflow-x: auto;
+  padding-bottom: 12px;
+}
+
+.board-col {
+  flex: 0 0 296px;
+  background: #eef0f4;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 10px;
+  transition: border-color 0.13s ease, background 0.13s ease;
+
+  &--won { background: #e9f4ee; }
+  &--lost { background: #f4ecec; }
+
+  &--over {
+    border-color: $accent;
+    background: $accent-soft;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px 10px;
+  }
+
+  &__name { font-weight: 700; font-size: 13.5px; }
+
+  &__count {
+    font-family: $font-mono;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(20, 24, 31, 0.08);
+    border-radius: 99px;
+    padding: 1px 8px;
+  }
+
+  &__sum { font-family: $font-mono; font-size: 11.5px; color: $ink-soft; }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 44px;
+  }
+}
+
+.lead-card {
+  display: block;
+  background: $surface;
+  border: 1px solid $line;
+  border-radius: 9px;
+  padding: 11px 12px;
+  color: $ink;
+  box-shadow: $shadow-1;
+  cursor: grab;
+  transition: box-shadow 0.13s ease, transform 0.13s ease, opacity 0.13s ease;
+
+  &:hover { box-shadow: $shadow-2; transform: translateY(-1px); }
+
+  &.is-dragging { opacity: 0.55; transform: rotate(2deg) scale(1.02); cursor: grabbing; }
+
+  &__title { font-weight: 600; font-size: 13.5px; line-height: 1.35; margin-bottom: 4px; }
+
+  &__amount { font-family: $font-mono; font-size: 12.5px; font-weight: 600; color: $accent-deep; margin-bottom: 4px; }
+
+  &__contact { font-size: 12.5px; color: $ink-soft; margin-bottom: 7px; }
+
+  &__meta { display: flex; align-items: center; gap: 7px; }
+
+  &__source {
+    font-size: 11px;
+    color: $ink-soft;
+    background: #f2f4f8;
+    border-radius: 5px;
+    padding: 1px 6px;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__date { font-family: $font-mono; font-size: 10.5px; color: $ink-soft; }
+}
+
+.avatar--xs { width: 20px; height: 20px; border-radius: 6px; font-size: 9px; }
+
+// ============================================================
+// Задачи
+// ============================================================
+.tasks { display: flex; flex-direction: column; }
+
+.task {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 4px;
+  border-bottom: 1px solid $line;
+  transition: background 0.13s ease, opacity 0.2s ease;
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: #f8fafc; }
+
+  &__check {
+    width: 21px;
+    height: 21px;
+    margin-top: 1px;
+    border: 2px solid #c3c9d4;
+    border-radius: 7px;
+    background: $surface;
+    cursor: pointer;
+    flex: none;
+    padding: 0;
+    position: relative;
+    transition: all 0.15s ease;
+
+    &:hover { border-color: $accent; }
+
+    &--done {
+      background: #12905b;
+      border-color: #12905b;
+
+      &::after {
+        content: "";
+        position: absolute;
+        left: 5px;
+        top: 1px;
+        width: 5px;
+        height: 10px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(42deg);
+      }
+    }
+  }
+
+  &__body { flex: 1; min-width: 0; }
+
+  &__title { font-weight: 600; font-size: 14px; transition: color 0.2s ease; }
+
+  &--done &__title { color: $ink-soft; text-decoration: line-through; }
+  &--done { opacity: 0.75; }
+
+  &__meta { display: flex; align-items: center; gap: 10px; margin-top: 2px; font-size: 12.5px; flex-wrap: wrap; }
+
+  &__due { font-family: $font-mono; font-size: 11px; color: $ink-soft; }
+  &__due--late { color: $danger; font-weight: 600; }
+
+  &__link { font-size: 12.5px; }
+
+  &__edit { font-size: 12.5px; color: $ink-soft; align-self: center; }
+  &__edit:hover { color: $accent-deep; }
+}
+
+.card--overdue { border-color: #f3c6c6; }
+
+// ============================================================
+// Календарь
+// ============================================================
+.month-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__title { font-weight: 700; min-width: 140px; text-align: center; }
+}
+
+.card--calendar { padding: 14px; }
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+
+  &__weekday {
+    @include microlabel;
+    text-align: center;
+    padding: 4px 0 8px;
+  }
+
+  &__day {
+    min-height: 108px;
+    background: #f8f9fb;
+    border: 1px solid $line;
+    border-radius: 8px;
+    padding: 7px 8px;
+    transition: border-color 0.13s ease, box-shadow 0.13s ease;
+
+    &:hover { border-color: #cdd3de; }
+
+    &--other { opacity: 0.45; }
+
+    &--today {
+      background: $accent-soft;
+      border-color: rgba(46, 107, 230, 0.5);
+    }
+  }
+
+  &__num { font-family: $font-mono; font-size: 11.5px; font-weight: 600; color: $ink-soft; margin-bottom: 5px; }
+
+  &__day--today &__num { color: $accent-deep; }
+
+  &__task {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: $ink;
+    background: $surface;
+    border: 1px solid $line;
+    border-radius: 5px;
+    padding: 2px 6px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: border-color 0.13s ease;
+
+    &:hover { border-color: $accent; }
+  }
+
+  &__more { font-size: 11px; color: $ink-soft; }
+}
+
+@media (max-width: 860px) {
+  .cal { grid-template-columns: repeat(7, minmax(84px, 1fr)); overflow-x: auto; }
+  .card--calendar { overflow-x: auto; }
+}
+
+// ============================================================
+// Отчёты: анимированные бары
+// ============================================================
+@keyframes growBar { from { width: 0; } }
+
+.bars { display: flex; flex-direction: column; gap: 12px; }
+
+.bar {
+  display: grid;
+  grid-template-columns: 130px 1fr 40px;
+  align-items: center;
+  gap: 12px;
+
+  &__label { font-size: 13px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  &__track { background: #eef0f4; border-radius: 99px; height: 12px; overflow: hidden; }
+
+  &__fill {
+    height: 100%;
+    min-width: 2px;
+    border-radius: 99px;
+    background: linear-gradient(90deg, #3e7bfa, $accent-deep);
+    animation: growBar 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+    &--won { background: linear-gradient(90deg, #2fbf7f, #12905b); }
+    &--lost { background: linear-gradient(90deg, #e0715f, #c04a3a); }
+  }
+
+  &__value { font-family: $font-mono; font-size: 12.5px; font-weight: 600; text-align: right; }
+}
+
+// ============================================================
+// Модалка дня (календарь)
+// ============================================================
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.cal__day { cursor: pointer; }
+
+.modal {
+  border: none;
+  border-radius: 14px;
+  padding: 0;
+  width: min(440px, calc(100vw - 32px));
+  background: $surface;
+  box-shadow: 0 30px 80px rgba(4, 10, 30, 0.4);
+
+  &[open] .modal__inner { animation: modalIn 0.22s ease both; }
+
+  &::backdrop {
+    background: rgba(10, 14, 24, 0.5);
+    backdrop-filter: blur(3px);
+  }
+
+  &__inner { padding: 20px 22px 22px; }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  &__title { margin: 0; font-size: 17px; }
+
+  &__close {
+    border: none;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: $ink-soft;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 6px;
+
+    &:hover { color: $ink; background: #f2f4f8; }
+  }
+
+  &__tasks { margin-bottom: 14px; }
+
+  &__task {
+    display: block;
+    padding: 8px 10px;
+    border: 1px solid $line;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    color: $ink;
+    font-weight: 600;
+    font-size: 13.5px;
+    transition: border-color 0.13s ease, background 0.13s ease;
+
+    &:hover { border-color: $accent; background: $accent-soft; }
+  }
+
+  &__form .field { margin-bottom: 10px; }
+  &__form .actions-row { margin-top: 12px; }
 }

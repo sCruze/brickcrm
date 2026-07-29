@@ -1,4 +1,7 @@
 .page-head
   %h1= title
-.card.card--placeholder
-  %p.muted= text
+.card.card--empty
+  .empty
+    = nav_icon(defined?(icon) ? icon : "dashboard")
+    %p.empty__text= text
+    %span.chip в разработке

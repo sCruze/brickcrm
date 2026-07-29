@@ -1,0 +1,6 @@
+- content_for :title, "Филиал · BrickCRM"
+.crumbs= link_to "← Филиалы", settings_branches_path
+.page-head
+  %h1= @branch.name
+.card
+  = render "form", branch: @branch

@@ -1,0 +1,16 @@
+.task{class: ("task--done" if task.done?)}
+  - if can_write
+    = button_to "", toggle_task_path(task), method: :patch, class: "task__check#{" task__check--done" if task.done?}", form_class: "inline-form", title: task.done? ? "Вернуть в работу" : "Выполнено"
+  .task__body
+    .task__title= task.title
+    .task__meta
+      - if task.due_on
+        %span{class: (!task.done? && task.due_on < Date.current) ? "task__due task__due--late" : "task__due"}= ru_date_short(task.due_on)
+      - if task.lead
+        = link_to task.lead.title, lead_path(task.lead), class: "task__link"
+      - elsif task.client
+        = link_to task.client.name, client_path(task.client), class: "task__link"
+      - if task.assignee
+        %span.muted= task.assignee.name.presence || task.assignee.email
+  - if can_write
+    = link_to "изменить", edit_task_path(task), class: "task__edit"

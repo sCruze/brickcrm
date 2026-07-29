@@ -1,0 +1,18 @@
+= form_with model: [:settings, endpoint], class: "form-narrow" do |f|
+  - if endpoint.errors.any?
+    .flash.flash--alert= endpoint.errors.full_messages.join(". ")
+  .field
+    = f.label :name, "Имя (совпадает с destination исходящих событий)"
+    = f.text_field :name, placeholder: "billing"
+  .field
+    = f.label :url, "URL приёмника"
+    = f.text_field :url, placeholder: "https://example.com/api/events"
+  .field
+    = f.label :token, "Bearer-токен (необязательно)"
+    = f.text_field :token, autocomplete: "off"
+  .field.field--inline
+    = f.check_box :active
+    = f.label :active, "Активен"
+  .actions-row
+    = f.submit endpoint.persisted? ? "Сохранить" : "Добавить", class: "btn btn--primary"
+    = link_to "Отмена", settings_webhook_endpoints_path, class: "btn btn--quiet"

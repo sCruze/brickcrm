@@ -1,0 +1,6 @@
+- content_for :title, "Роль · BrickCRM"
+.crumbs= link_to "← Роли", settings_roles_path
+.page-head
+  %h1= @role.name
+.card
+  = render "form", role: @role

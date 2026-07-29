@@ -13,36 +13,49 @@
     %link{href: "/icon.png", rel: "icon", type: "image/png"}/
     %link{href: "/icon.svg", rel: "icon", type: "image/svg+xml"}/
     %link{href: "/icon.png", rel: "apple-touch-icon"}/
+    %link{href: "https://fonts.googleapis.com", rel: "preconnect"}/
+    %link{crossorigin: "", href: "https://fonts.gstatic.com", rel: "preconnect"}/
+    %link{href: "https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap", rel: "stylesheet"}/
     = stylesheet_link_tag "application", "data-turbo-track": "reload"
     = javascript_importmap_tags
   %body
     - if authenticated?
       .app
         %aside.sidebar
-          .sidebar__logo
-            .sidebar__logo-mark B
-            .sidebar__logo-text BrickCRM
+          = link_to root_path, class: "sidebar__logo" do
+            = brand_mark
+            %span.sidebar__logo-text BrickCRM
           %nav.sidebar__nav
-            = nav_link "Дашборд", dashboard_path
-            = nav_link "Лиды", leads_path
-            = nav_link "Клиенты", clients_path
-            = nav_link "Задачи", tasks_path
-            = nav_link "Календарь", calendar_path
-            = nav_link "Отчёты", reports_path
-            = nav_link "Настройки", settings_path
+            .sidebar__section Работа
+            = nav_link "Дашборд", dashboard_path, icon: "dashboard"
+            = nav_link "Лиды", leads_path, icon: "leads"
+            = nav_link "Клиенты", clients_path, icon: "clients"
+            = nav_link "Задачи", tasks_path, icon: "tasks"
+            = nav_link "Календарь", calendar_path, icon: "calendar"
+            .sidebar__section Аналитика
+            = nav_link "Отчёты", reports_path, icon: "reports"
+            .sidebar__section Система
+            = nav_link "Настройки", settings_root_path, icon: "settings", match: :prefix
           .sidebar__footer
-            .sidebar__user= current_user.name.presence || current_user.email
-            = button_to "Выйти", session_path, method: :delete, class: "btn btn--ghost btn--sm"
-        %main.content
+            %span.sidebar__version= "ядро · v#{Rails.configuration.x.app_version}"
+        %main.shell
+          %header.topbar
+            .topbar__date= ru_today
+            .topbar__user
+              .avatar= user_initials(current_user)
+              %span.topbar__user-name= current_user.name.presence || current_user.email
+              = button_to "Выйти", session_path, method: :delete, class: "btn btn--quiet btn--sm"
+          .content
+            - if flash[:alert]
+              .flash.flash--alert= flash[:alert]
+            - if flash[:notice]
+              .flash.flash--notice= flash[:notice]
+            = yield
+    - else
+      %main.auth
+        .auth__inner
           - if flash[:alert]
             .flash.flash--alert= flash[:alert]
           - if flash[:notice]
             .flash.flash--notice= flash[:notice]
           = yield
-    - else
-      %main.auth
-        - if flash[:alert]
-          .flash.flash--alert= flash[:alert]
-        - if flash[:notice]
-          .flash.flash--notice= flash[:notice]
-        = yield

@@ -11,6 +11,17 @@ module Brickcrm
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 
+    # Локализация: интерфейс на русском
+    config.i18n.default_locale = :ru
+    config.i18n.available_locales = %i[ru en]
+
+    # Версия приложения: файл VERSION в корне, показывается в футере сайдбара
+    config.x.app_version = begin
+      File.read(Rails.root.join("VERSION")).strip
+    rescue Errno::ENOENT
+      "0.0.0"
+    end
+
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.

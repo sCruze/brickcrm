@@ -1,0 +1,31 @@
+- content_for :title, "Филиалы · BrickCRM"
+.crumbs= link_to "← Настройки", settings_root_path
+.page-head
+  %h1 Филиалы
+  .page-head__spacer
+  - if current_user.permission?("settings", "manage")
+    = link_to "Добавить филиал", new_settings_branch_path, class: "btn btn--primary btn--sm"
+.card
+  - if @branches.any?
+    %table.table
+      %tr
+        %th Название
+        %th Город
+        %th Статус
+        %th
+      - @branches.each do |branch|
+        %tr
+          %td= branch.name
+          %td.muted= branch.city
+          %td
+            - if branch.active?
+              %span.chip.chip--on активен
+            - else
+              %span.chip.chip--off закрыт
+          %td.cell-actions
+            - if current_user.permission?("settings", "manage")
+              = link_to "Изменить", edit_settings_branch_path(branch), class: "btn btn--quiet btn--sm"
+              = button_to "Удалить", settings_branch_path(branch), method: :delete, class: "btn btn--danger btn--sm", form: { data: { turbo_confirm: "Удалить филиал «#{branch.name}»?" }, class: "inline-form" }
+  - else
+    .empty
+      %p.empty__text Филиалов пока нет. Добавьте первый — и роли можно будет ограничивать его скоупом.

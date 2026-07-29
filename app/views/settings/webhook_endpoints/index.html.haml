@@ -1,0 +1,32 @@
+- content_for :title, "Webhook-эндпоинты · BrickCRM"
+.crumbs= link_to "← Настройки", settings_root_path
+.page-head
+  %h1 Webhook-эндпоинты
+  .page-head__spacer
+  - if current_user.permission?("settings", "manage")
+    = link_to "Добавить эндпоинт", new_settings_webhook_endpoint_path, class: "btn btn--primary btn--sm"
+.card
+  - if @endpoints.any?
+    %table.table
+      %tr
+        %th Имя
+        %th URL
+        %th Статус
+        %th
+      - @endpoints.each do |endpoint|
+        %tr
+          %td
+            %code= endpoint.name
+          %td.muted= endpoint.url
+          %td
+            - if endpoint.active?
+              %span.chip.chip--on активен
+            - else
+              %span.chip.chip--off выключен
+          %td.cell-actions
+            - if current_user.permission?("settings", "manage")
+              = link_to "Изменить", edit_settings_webhook_endpoint_path(endpoint), class: "btn btn--quiet btn--sm"
+              = button_to "Удалить", settings_webhook_endpoint_path(endpoint), method: :delete, class: "btn btn--danger btn--sm", form: { data: { turbo_confirm: "Удалить эндпоинт «#{endpoint.name}»?" }, class: "inline-form" }
+  - else
+    .empty
+      %p.empty__text Эндпоинтов пока нет. Добавьте адрес внешней системы — и исходящие события начнут доставляться туда автоматически.

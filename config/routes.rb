@@ -17,14 +17,24 @@ Rails.application.routes.draw do
     end
   end
 
-  # --- Разделы CRM (каркас) ---
+  # --- Разделы CRM ---
   get "dashboard", to: "dashboard#index"
-  resources :leads,   only: %i[index]
-  resources :clients, only: %i[index]
-  resources :tasks,   only: %i[index]
+
+  resources :leads do
+    member { patch :move }
+  end
+  resources :clients
+  resources :tasks, except: :show do
+    member { patch :toggle }
+  end
   get "calendar", to: "calendar#index"
   get "reports",  to: "reports#index"
-  get "settings", to: "settings#index"
+  namespace :settings do
+    root to: "overview#index"
+    resources :roles, except: :show
+    resources :webhook_endpoints, except: :show
+    resources :branches, except: :show
+  end
 
   root "dashboard#index"
 end

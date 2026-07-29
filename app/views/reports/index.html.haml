@@ -1,2 +1,53 @@
 - content_for :title, "Отчёты · BrickCRM"
-= render "shared/placeholder", title: "Отчёты", text: "Отчётность: конверсия воронок, выручка, посещаемость."
+.page-head
+  %h1 Отчёты
+  - if @funnels.many?
+    .funnel-tabs
+      - @funnels.each do |funnel|
+        = link_to funnel.name, reports_path(funnel_id: funnel.id), class: "funnel-tab#{" funnel-tab--active" if funnel == @funnel}"
+- if @funnel.nil?
+  .card.card--empty
+    .empty
+      = nav_icon("reports")
+      %p.empty__text Нет активных воронок — отчёты появятся вместе с первой.
+- else
+  .grid.grid--stats
+    .stat-card
+      .stat-card__label Конверсия в оплату
+      .stat-card__value= @conversion ? "#{@conversion}%" : "—"
+      .stat-card__foot= @conversion ? "из #{@won + @lost} закрытых" : "закрытых лидов пока нет"
+    .stat-card
+      .stat-card__label Оплачено
+      .stat-card__value{data: { controller: "counter", counter_to_value: @won }}= @won
+      .stat-card__foot за всё время
+    .stat-card
+      .stat-card__label Выручка за месяц
+      .stat-card__value= money(@month_revenue)
+      .stat-card__foot по закрытым в оплату
+    .stat-card
+      .stat-card__label Задач выполнено
+      .stat-card__value{data: { controller: "counter", counter_to_value: @tasks_done_month }}= @tasks_done_month
+      .stat-card__foot за этот месяц
+  .grid.grid--panels
+    .card
+      %h2 Лиды по этапам
+      .bars
+        - @stage_counts.each_with_index do |(stage, count), index|
+          .bar
+            .bar__label= stage.name
+            .bar__track
+              .bar__fill{class: ("bar__fill--won" if stage.won?) || ("bar__fill--lost" if stage.lost?), style: "width: #{(count * 100.0 / @max_stage_count).round(1)}%; animation-delay: #{index * 0.07}s"}
+            .bar__value= count
+    .card
+      %h2 Источники лидов
+      - if @sources.any?
+        .bars
+          - max_source = [@sources.values.max, 1].max
+          - @sources.each_with_index do |(source, count), index|
+            .bar
+              .bar__label= source
+              .bar__track
+                .bar__fill{style: "width: #{(count * 100.0 / max_source).round(1)}%; animation-delay: #{index * 0.07}s"}
+              .bar__value= count
+      - else
+        %p.muted Заполняйте «Источник» в лидах — здесь появится сводка, откуда приходят клиенты.

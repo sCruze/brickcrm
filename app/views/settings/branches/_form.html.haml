@@ -1,0 +1,15 @@
+= form_with model: [:settings, branch], class: "form-narrow" do |f|
+  - if branch.errors.any?
+    .flash.flash--alert= branch.errors.full_messages.join(". ")
+  .field
+    = f.label :name, "Название"
+    = f.text_field :name, placeholder: "Центральный"
+  .field
+    = f.label :city, "Город"
+    = f.text_field :city, placeholder: "Москва"
+  .field.field--inline
+    = f.check_box :active
+    = f.label :active, "Активен"
+  .actions-row
+    = f.submit branch.persisted? ? "Сохранить" : "Добавить", class: "btn btn--primary"
+    = link_to "Отмена", settings_branches_path, class: "btn btn--quiet"

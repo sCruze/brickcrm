@@ -1,0 +1,27 @@
+- content_for :title, "Роли · BrickCRM"
+.crumbs= link_to "← Настройки", settings_root_path
+.page-head
+  %h1 Роли и права
+  .page-head__spacer
+  - if current_user.permission?("settings", "manage")
+    = link_to "Создать роль", new_settings_role_path, class: "btn btn--primary btn--sm"
+.card
+  %table.table
+    %tr
+      %th Ключ
+      %th Название
+      %th Разделы
+      %th
+    - @roles.each do |role|
+      %tr
+        %td
+          %code= role.key
+          - if role.system?
+            %span.chip.chip--off системная
+        %td= role.name
+        %td.muted= role.human_sections.join(", ")
+        %td.cell-actions
+          - if current_user.permission?("settings", "manage")
+            = link_to "Изменить", edit_settings_role_path(role), class: "btn btn--quiet btn--sm"
+            - unless role.system?
+              = button_to "Удалить", settings_role_path(role), method: :delete, class: "btn btn--danger btn--sm", form: { data: { turbo_confirm: "Удалить роль «#{role.name}»?" }, class: "inline-form" }

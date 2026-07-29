@@ -22,6 +22,9 @@ gem "jbuilder"
 # Шаблонизатор haml вместо erb
 gem "haml-rails", "~> 2.1"
 
+# Русские переводы Rails: валидации, даты, числа
+gem "rails-i18n", "~> 8.0"
+
 # SSO: валидация подписанных JWT (RS256) от kodlab (IdP)
 gem "jwt", "~> 3.1"
 

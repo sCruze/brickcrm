@@ -1,0 +1,13 @@
+= link_to lead_path(lead), class: "lead-card", draggable: draggable, data: { lead_id: lead.id, amount: (lead.amount || 0) } do
+  .lead-card__title= lead.title
+  - if lead.amount.present? && lead.amount.positive?
+    .lead-card__amount= money(lead.amount)
+  - if lead.contact_name.present? || lead.client
+    .lead-card__contact= lead.client&.name || lead.contact_name
+  .lead-card__meta
+    - if lead.assignee
+      .avatar.avatar--xs{title: lead.assignee.name}= user_initials(lead.assignee)
+    - if lead.source.present?
+      %span.lead-card__source= lead.source
+    .page-head__spacer
+    %span.lead-card__date= ru_date_short(lead.created_at.to_date)

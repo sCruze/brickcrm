@@ -1,2 +1,26 @@
 - content_for :title, "Задачи · BrickCRM"
-= render "shared/placeholder", title: "Задачи", text: "Задачи менеджеров: напоминания, дедлайны, привязка к лидам и сделкам."
+- can_write = current_user.permission?("tasks", "write")
+.page-head
+  %h1 Задачи
+  .page-head__spacer
+  - if can_write
+    = link_to "Новая задача", new_task_path, class: "btn btn--primary btn--sm"
+- if [@overdue, @today, @upcoming, @undated, @done].all?(&:empty?)
+  .card.card--empty
+    .empty
+      = nav_icon("tasks")
+      %p.empty__text Задач пока нет. Создайте первую — со сроком она попадёт и в календарь.
+- else
+  - { "Просроченные" => @overdue, "Сегодня" => @today, "Ближайшие" => @upcoming, "Без срока" => @undated }.each do |group, tasks|
+    - next if tasks.empty?
+    .card{class: ("card--overdue" if group == "Просроченные")}
+      %h2= group
+      .tasks
+        - tasks.each do |task|
+          = render "task", task: task, can_write: can_write
+  - if @done.any?
+    .card
+      %h2 Выполненные недавно
+      .tasks
+        - @done.each do |task|
+          = render "task", task: task, can_write: can_write

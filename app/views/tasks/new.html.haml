@@ -1,0 +1,6 @@
+- content_for :title, "Новая задача · BrickCRM"
+.crumbs= link_to "← Задачи", tasks_path
+.page-head
+  %h1 Новая задача
+.card
+  = render "form", task: @task

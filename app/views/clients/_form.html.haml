@@ -1,0 +1,22 @@
+= form_with model: client, class: "form-narrow" do |f|
+  - if client.errors.any?
+    .flash.flash--alert= client.errors.full_messages.join(". ")
+  .field
+    = f.label :name, "Имя"
+    = f.text_field :name
+  .field-row
+    .field
+      = f.label :phone, "Телефон"
+      = f.text_field :phone
+    .field
+      = f.label :email, "Почта"
+      = f.email_field :email
+  .field
+    = f.label :branch_id, "Филиал"
+    = f.collection_select :branch_id, Branch.active.order(:name), :id, :name, include_blank: "общий"
+  .field
+    = f.label :notes, "Заметки"
+    = f.text_area :notes, rows: 3
+  .actions-row
+    = f.submit client.persisted? ? "Сохранить" : "Создать клиента", class: "btn btn--primary"
+    = link_to "Отмена", clients_path, class: "btn btn--quiet"

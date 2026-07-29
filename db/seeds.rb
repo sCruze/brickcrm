@@ -52,3 +52,18 @@ if User.none?
   admin.memberships.create!(role: Role.find_by!(key: "system_admin"))
   puts "Создан администратор: admin@example.com / changeme123"
 end
+
+# Базовая воронка продаж
+if Funnel.none?
+  funnel = Funnel.create!(name: "Продажи", position: 1)
+  [
+    [ "Новая заявка", "open" ],
+    [ "В работе", "open" ],
+    [ "Встреча", "open" ],
+    [ "Оплачено", "won" ],
+    [ "Отказ", "lost" ]
+  ].each_with_index do |(name, kind), index|
+    funnel.stages.create!(name: name, kind: kind, position: index + 1)
+  end
+  puts "Воронка «Продажи»: #{funnel.stages.count} этапов"
+end

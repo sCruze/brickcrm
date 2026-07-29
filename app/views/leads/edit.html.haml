@@ -1,0 +1,6 @@
+- content_for :title, "Лид · BrickCRM"
+.crumbs= link_to "← Карточка лида", lead_path(@lead)
+.page-head
+  %h1= @lead.title
+.card
+  = render "form", lead: @lead

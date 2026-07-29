@@ -1,2 +1,32 @@
 - content_for :title, "Клиенты · BrickCRM"
-= render "shared/placeholder", title: "Клиенты", text: "Контакты и клиенты: карточки, связи (родитель — ученик), история."
+- can_write = current_user.permission?("clients", "write")
+.page-head
+  %h1 Клиенты
+  .page-head__spacer
+  - if can_write
+    = link_to "Новый клиент", new_client_path, class: "btn btn--primary btn--sm"
+.card
+  = form_with url: clients_path, method: :get, class: "search-row" do |f|
+    = f.text_field :q, value: @query, placeholder: "Поиск: имя, телефон, почта", class: "search-input"
+    = f.submit "Найти", class: "btn btn--secondary"
+  - if @clients.any?
+    %table.table
+      %tr
+        %th Имя
+        %th Телефон
+        %th Почта
+        %th Филиал
+      - @clients.each do |client|
+        %tr
+          %td= link_to client.name, client_path(client)
+          %td.muted= client.phone
+          %td.muted= client.email
+          %td.muted= client.branch&.name || "общий"
+  - else
+    .empty
+      = nav_icon("clients")
+      %p.empty__text
+        - if @query.present?
+          Никого не нашлось по запросу «#{@query}». Попробуйте иначе или заведите нового клиента.
+        - else
+          База пуста. Добавьте первого клиента — он появится здесь и в выпадающих списках лидов.

@@ -14,4 +14,17 @@ class Role < ApplicationRecord
   def self.full_permissions
     SECTIONS.index_with { ACTIONS.dup }
   end
+
+  # Переводы словарей: config/locales/ru.yml -> sections.* / permissions.*
+  def self.section_name(key)
+    I18n.t("sections.#{key}", default: key.to_s)
+  end
+
+  def self.action_name(key)
+    I18n.t("permissions.#{key}", default: key.to_s)
+  end
+
+  def human_sections
+    permissions.keys.map { |key| self.class.section_name(key) }
+  end
 end

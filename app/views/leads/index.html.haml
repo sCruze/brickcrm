@@ -1,2 +1,30 @@
 - content_for :title, "Лиды · BrickCRM"
-= render "shared/placeholder", title: "Лиды", text: "Воронки лидов: заявки, статусы, источники и UTM. Следующий шаг каркаса."
+- can_write = current_user.permission?("leads", "write")
+.page-head
+  %h1 Лиды
+  - if @funnels.many?
+    .funnel-tabs
+      - @funnels.each do |funnel|
+        = link_to funnel.name, leads_path(funnel_id: funnel.id), class: "funnel-tab#{" funnel-tab--active" if funnel == @funnel}"
+  .page-head__spacer
+  - if can_write && @funnel
+    = link_to "Новый лид", new_lead_path(funnel_id: @funnel.id), class: "btn btn--primary btn--sm"
+- if @funnel.nil?
+  .card.card--empty
+    .empty
+      = nav_icon("leads")
+      %p.empty__text Нет ни одной активной воронки. Создайте её в сидax или через консоль — и доска появится здесь.
+- else
+  .board{data: can_write ? { controller: "kanban", kanban_url_value: "/leads/:id/move", action: "dragstart->kanban#dragstart dragend->kanban#dragend dragover->kanban#dragover dragleave->kanban#dragleave drop->kanban#drop" } : {}}
+    - @stages.each do |stage|
+      .board-col{class: ("board-col--won" if stage.won?) || ("board-col--lost" if stage.lost?), data: { stage_id: stage.id }}
+        .board-col__head
+          %span.board-col__name= stage.name
+          %span.board-col__count{data: { count: "" }}= (@leads_by_stage[stage.id] || []).size
+          .page-head__spacer
+          %span.board-col__sum{data: { sum: "" }}
+            - sum = (@leads_by_stage[stage.id] || []).sum { |l| l.amount || 0 }
+            = sum.positive? ? money(sum) : ""
+        .board-col__cards{data: { cards: "" }}
+          - (@leads_by_stage[stage.id] || []).each do |lead|
+            = render "lead_card", lead: lead, draggable: can_write

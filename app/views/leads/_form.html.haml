@@ -1,0 +1,49 @@
+= form_with model: lead, class: "form-narrow" do |f|
+  - if lead.errors.any?
+    .flash.flash--alert= lead.errors.full_messages.join(". ")
+  - if lead.new_record?
+    .field
+      = f.label :funnel_id, "Воронка"
+      = f.collection_select :funnel_id, Funnel.active.ordered, :id, :name
+  - else
+    = f.hidden_field :funnel_id
+    .field
+      = f.label :stage_id, "Этап"
+      = f.collection_select :stage_id, lead.funnel.stages, :id, :name
+  .field
+    = f.label :title, "Название"
+    = f.text_field :title, placeholder: "Запрос: групповые занятия, 2 чел."
+  .field-row
+    .field
+      = f.label :contact_name, "Контакт"
+      = f.text_field :contact_name, placeholder: "Имя"
+    .field
+      = f.label :phone, "Телефон"
+      = f.text_field :phone, placeholder: "+7 ..."
+  .field-row
+    .field
+      = f.label :email, "Почта"
+      = f.email_field :email
+    .field
+      = f.label :amount, "Сумма, ₽"
+      = f.number_field :amount, step: 100, min: 0
+  .field-row
+    .field
+      = f.label :source, "Источник"
+      = f.text_field :source, placeholder: "сайт, реклама, рекомендация..."
+    .field
+      = f.label :assignee_id, "Ответственный"
+      = f.collection_select :assignee_id, User.active.order(:name), :id, ->(u) { u.name.presence || u.email }, include_blank: "—"
+  .field-row
+    .field
+      = f.label :client_id, "Клиент из базы"
+      = f.collection_select :client_id, Client.visible_to(current_user).order(:name), :id, :name, include_blank: "—"
+    .field
+      = f.label :branch_id, "Филиал"
+      = f.collection_select :branch_id, Branch.active.order(:name), :id, :name, include_blank: "общий"
+  .field
+    = f.label :notes, "Заметки"
+    = f.text_area :notes, rows: 3
+  .actions-row
+    = f.submit lead.persisted? ? "Сохранить" : "Создать лид", class: "btn btn--primary"
+    = link_to "Отмена", leads_path(funnel_id: lead.funnel_id), class: "btn btn--quiet"

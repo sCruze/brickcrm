@@ -1,16 +1,18 @@
 - content_for :title, "Вход · BrickCRM"
 .auth-card
-  .auth-card__logo
-    .sidebar__logo-mark B
-  %h1.auth-card__title Вход в BrickCRM
+  .auth-card__head
+    = brand_mark
+    .auth-card__brand BrickCRM
+  %h1.auth-card__title Вход в систему
+  %p.auth-card__hint Рабочее пространство вашей команды
   - if CrmConfig.password_auth?
     = form_with url: session_path, method: :post, local: true do |f|
       .field
         = f.label :email, "Почта"
-        = f.email_field :email, required: true, autofocus: true, autocomplete: "username"
+        = f.email_field :email, required: true, autofocus: true, autocomplete: "username", placeholder: "you@company.ru"
       .field
         = f.label :password, "Пароль"
-        = f.password_field :password, required: true, autocomplete: "current-password"
+        = f.password_field :password, required: true, autocomplete: "current-password", placeholder: "••••••••"
       = f.submit "Войти", class: "btn btn--primary btn--block"
   - if CrmConfig.password_auth? && CrmConfig.sso_enabled?
     .auth-card__divider или

@@ -1,0 +1,29 @@
+= form_with model: task, class: "form-narrow" do |f|
+  - if task.errors.any?
+    .flash.flash--alert= task.errors.full_messages.join(". ")
+  .field
+    = f.label :title, "Что сделать"
+    = f.text_field :title, placeholder: "Перезвонить по заявке"
+  .field-row
+    .field
+      = f.label :due_on, "Срок"
+      = f.date_field :due_on
+    .field
+      = f.label :assignee_id, "Ответственный"
+      = f.collection_select :assignee_id, User.active.order(:name), :id, ->(u) { u.name.presence || u.email }, include_blank: "—"
+  .field-row
+    .field
+      = f.label :lead_id, "Лид"
+      = f.collection_select :lead_id, Lead.visible_to(current_user).order(created_at: :desc).limit(100), :id, :title, include_blank: "—"
+    .field
+      = f.label :client_id, "Клиент"
+      = f.collection_select :client_id, Client.visible_to(current_user).order(:name), :id, :name, include_blank: "—"
+  .field
+    = f.label :notes, "Заметки"
+    = f.text_area :notes, rows: 3
+  .actions-row
+    = f.submit task.persisted? ? "Сохранить" : "Создать задачу", class: "btn btn--primary"
+    = link_to "Отмена", tasks_path, class: "btn btn--quiet"
+    - if task.persisted?
+      .page-head__spacer
+      = button_to "Удалить", task_path(task), method: :delete, class: "btn btn--danger", form: { data: { turbo_confirm: "Удалить задачу?" }, class: "inline-form" }
