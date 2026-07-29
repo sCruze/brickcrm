@@ -20,7 +20,7 @@ gem "dartsass-rails"
 gem "jbuilder"
 
 # Шаблонизатор haml вместо erb
-gem "haml-rails", "~> 2.1"
+gem "haml-rails", "~> 3.1"
 
 # Русские переводы Rails: валидации, даты, числа
 gem "rails-i18n", "~> 8.0"
