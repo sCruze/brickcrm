@@ -1,0 +1,37 @@
+# Прод: самодостаточный стек CRM. Переменные — в .env (см. .env.example).
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DATABASE_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  crm:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "127.0.0.1:3007:80"   # за reverse-proxy (nginx) на хосте
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: .
+    command: ./bin/jobs        # Solid Queue
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

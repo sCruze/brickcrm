@@ -1,0 +1,43 @@
+# Локальная разработка: свой Postgres, исходники смонтированы, live-reload sass.
+# Запуск:  docker compose -f docker-compose.dev.yml up --build
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5434:5432"   # доступ с хоста (psql); 5434 — чтобы не конфликтовать с другими проектами
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+
+  crm:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    command: bash -c "rm -f tmp/pids/server.pid; bundle check || bundle install; bin/rails db:prepare && bin/rails db:seed && bin/dev"
+    volumes:
+      - .:/rails                  # правки кода видны сразу
+      - bundle:/usr/local/bundle  # кэш гемов между перезапусками
+    ports:
+      - "3001:3000"          # хост-порт 3001, чтобы жить рядом с другими dev-проектами
+    env_file: .env
+    environment:                  # перекрывает .env: внутри compose база — сервис db
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+    depends_on:
+      db:
+        condition: service_healthy
+    tty: true
+    stdin_open: true
+
+volumes:
+  pgdata:
+  bundle:

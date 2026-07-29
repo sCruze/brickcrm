@@ -1,0 +1,48 @@
+!!!
+%html{lang: "ru"}
+  %head
+    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title= content_for(:title) || "BrickCRM"
+    %meta{content: "width=device-width,initial-scale=1", name: "viewport"}/
+    %meta{content: "yes", name: "apple-mobile-web-app-capable"}/
+    %meta{content: "BrickCRM", name: "application-name"}/
+    %meta{content: "yes", name: "mobile-web-app-capable"}/
+    = csrf_meta_tags
+    = csp_meta_tag
+    = yield :head
+    %link{href: "/icon.png", rel: "icon", type: "image/png"}/
+    %link{href: "/icon.svg", rel: "icon", type: "image/svg+xml"}/
+    %link{href: "/icon.png", rel: "apple-touch-icon"}/
+    = stylesheet_link_tag "application", "data-turbo-track": "reload"
+    = javascript_importmap_tags
+  %body
+    - if authenticated?
+      .app
+        %aside.sidebar
+          .sidebar__logo
+            .sidebar__logo-mark B
+            .sidebar__logo-text BrickCRM
+          %nav.sidebar__nav
+            = nav_link "Дашборд", dashboard_path
+            = nav_link "Лиды", leads_path
+            = nav_link "Клиенты", clients_path
+            = nav_link "Задачи", tasks_path
+            = nav_link "Календарь", calendar_path
+            = nav_link "Отчёты", reports_path
+            = nav_link "Настройки", settings_path
+          .sidebar__footer
+            .sidebar__user= current_user.name.presence || current_user.email
+            = button_to "Выйти", session_path, method: :delete, class: "btn btn--ghost btn--sm"
+        %main.content
+          - if flash[:alert]
+            .flash.flash--alert= flash[:alert]
+          - if flash[:notice]
+            .flash.flash--notice= flash[:notice]
+          = yield
+    - else
+      %main.auth
+        - if flash[:alert]
+          .flash.flash--alert= flash[:alert]
+        - if flash[:notice]
+          .flash.flash--notice= flash[:notice]
+        = yield

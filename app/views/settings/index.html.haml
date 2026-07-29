@@ -1,0 +1,47 @@
+- content_for :title, "Настройки · BrickCRM"
+.page-head
+  %h1 Настройки
+.card
+  %h2 Режим работы
+  %table.table
+    %tr
+      %td Вход по паролю
+      %td
+        %strong= @password_auth ? "включён" : "выключен (PASSWORD_AUTH=disabled)"
+    %tr
+      %td Вход через SSO
+      %td
+        %strong= @sso_enabled ? "сконфигурирован (#{CrmConfig::Sso.provider_name})" : "не сконфигурирован"
+    %tr
+      %td Входящие источники событий
+      %td
+        - if @inbound_sources.any?
+          %strong= @inbound_sources.join(", ")
+        - else
+          %span.muted не сконфигурированы (входящий API закрыт)
+    %tr
+      %td Webhook-эндпоинты
+      %td
+        - if @webhook_endpoints.any?
+          - @webhook_endpoints.each do |endpoint|
+            %div
+              %strong= endpoint.name
+              %span.muted= "→ #{endpoint.url}#{" (выключен)" unless endpoint.active}"
+        - else
+          %span.muted не созданы
+.card
+  %h2 Роли
+  - if @roles.any?
+    %table.table
+      %tr
+        %th Ключ
+        %th Название
+        %th Разделы
+      - @roles.each do |role|
+        %tr
+          %td
+            %code= role.key
+          %td= role.name
+          %td.muted= role.permissions.keys.join(", ")
+  - else
+    %p.muted Роли не созданы — выполните bin/rails db:seed
