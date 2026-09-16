@@ -26,7 +26,7 @@ gem "haml-rails", "~> 2.1"
 gem "rails-i18n", "~> 8.0"
 
 # SSO: валидация подписанных JWT (RS256) от kodlab (IdP)
-gem "jwt", "~> 3.1"
+gem "jwt", "~> 3.3"
 
 # Авторизация: политики роль × скоуп (филиал) × модуль поверх crm_memberships
 gem "pundit", "~> 2.5"
