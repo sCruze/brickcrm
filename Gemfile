@@ -35,7 +35,7 @@ gem "pundit", "~> 2.5"
 gem "rack-cors"
 
 # Единственный HTTP-клиент проекта с единой политикой retry/timeout
-gem "faraday", "~> 2.13"
+gem "faraday", "~> 2.14"
 gem "faraday-retry"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
